@@ -1,0 +1,133 @@
+@(nodes: List[ElectricalData]) @main("Smart Battery Monitor for IoTs") {
+
+<html>
+<head>
+<meta http-equiv="refresh" content="10">
+<script language="javascript" type="text/javascript"
+    src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<script type="text/javascript" src="assets/javascripts/arbor.js"></script>
+<script type="text/javascript" src="assets/javascripts/graphics.js"></script>
+<script type="text/javascript" src="assets/javascripts/renderer.js"></script>
+</head>
+<body>
+    <body bgcolor="black">
+    <table align="right" valign="top">
+        <tr>
+            <td style="background-color: green;">Green</td>
+            <td style="background-color: green;">Node in charging mode</td>
+        </tr>
+        <tr>
+            <td style="background-color: red;">Red</td>
+            <td style="background-color: red;">Node in discharge mode</td>
+        </tr>
+        <tr>
+            <td style="background-color: lightslategray;">Gray</td>
+            <td style="background-color: lightslategray;">Node in Idle mode</td>
+        </tr>
+        <tr>
+            <td style="background-color: orange;">Orange</td>
+            <td style="background-color: orange;">Battery Percentage</td>
+        </tr>
+        <tr>
+            <td style="background-color: blue;">Blue</td>
+            <td style="background-color: blue;">Time to charge/discharge</td>
+        </tr>
+                <tr>
+            <td style="background-color: green;">60-100%</td>
+            <td style="background-color: green;">Heathy</td>
+        </tr>
+        <tr>
+            <td style="background-color: yellow;">30-60%</td>
+            <td style="background-color: yellow;">Safe</td>
+        </tr>
+        <tr>
+            <td style="background-color: red;">0-30%</td>
+            <td style="background-color: red;">Low on Charge</td>
+    </table>
+    <canvas id="viewport" width="800" height="600"></canvas>
+    <table border="1px">
+    
+    <script language="javascript" type="text/javascript">
+            var sys = arbor.ParticleSystem(500, 500, 1);
+            sys.parameters({gravity:true});
+            sys.renderer = Renderer("#viewport") ;
+            var data = {
+               nodes:{
+                 centre: {'color':'red','shape':'dot','label':'UH Network'},
+                 @if(nodes!=null && nodes.get(0) != null && nodes.get(0).getMode() != null && nodes.get(0).getMode().equalsIgnoreCase("C")){
+                     node0:{'color':'green','shape':'dot','label':'node0'},
+                 }else {
+                     @if(nodes!=null && nodes.get(0) != null && nodes.get(0).getMode() != null && nodes.get(0).getMode().equalsIgnoreCase("D")){
+                         node0:{'color':'red','shape':'dot','label':'node0'},
+                     }else{
+                         node0:{'color':'lightslategray','shape':'dot','label':'node0'},
+                     }
+                 }
+                 
+                 @if(nodes!=null && nodes.get(1) != null && nodes.get(1).getMode() != null && nodes.get(1).getMode().equalsIgnoreCase("C")){
+                     node1:{'color':'green','shape':'dot','label':'node1'},
+                 }else{
+                     @if(nodes!=null && nodes.get(1) != null && nodes.get(1).getMode() != null && nodes.get(1).getMode().equalsIgnoreCase("D")){
+                         node1:{'color':'red','shape':'dot','label':'node1'},
+                     }else{
+                         node1:{'color':'lightslategray','shape':'dot','label':'node1'},
+                     }
+                 }
+                 @if(nodes!=null && nodes.get(2) != null && nodes.get(2).getMode() != null && nodes.get(2).getMode().equalsIgnoreCase("C")){
+                     node2:{'color':'green','shape':'dot','label':'node2'},
+                 }else{
+                     @if(nodes!=null && nodes.get(2) != null && nodes.get(2).getMode() != null && nodes.get(2).getMode().equalsIgnoreCase("D")){
+                         node2:{'color':'red','shape':'dot','label':'node2'},
+                     }else{
+                         node2:{'color':'lightslategray','shape':'dot','label':'node2'},
+                     }
+                 }
+                 @if(nodes!=null && nodes.get(3) != null && nodes.get(3).getMode() != null && nodes.get(3).getMode().equalsIgnoreCase("C")){
+                     node3:{'color':'green','shape':'dot','label':'node3'},
+                 }else{
+                     @if(nodes!=null && nodes.get(3) != null && nodes.get(3).getMode() != null && nodes.get(3).getMode().equalsIgnoreCase("D")){
+                         node3:{'color':'red','shape':'dot','label':'node3'},
+                     }else{
+                         node3:{'color':'lightslategray','shape':'dot','label':'node3'},
+                     }
+                 }
+                 n0battery:{'color':'orange','shape':'rectangle','label':@nodes.get(0).getBattery_percentage() + "%","alpha":1},                       
+                 n1battery:{'color':'orange','shape':'rectangle','label':@nodes.get(1).getBattery_percentage() + "%","alpha":1},
+                 n2battery:{'color':'orange','shape':'rectangle','label':@nodes.get(2).getBattery_percentage() + "%","alpha":1},
+                 n3battery:{'color':'orange','shape':'rectangle','label':@nodes.get(3).getBattery_percentage() + "%","alpha":1},
+                 @if(nodes!=null && nodes.get(0) != null && nodes.get(0).getTime() != null){
+                     n0time:{'color':'blue','shape':'rectangle','label':"@nodes.get(0).getTime()"},
+                 }else{
+                     n0time:{'color':'blue','shape':'rectangle','label':"NA"},
+                 }
+                 @if(nodes!=null && nodes.get(1) != null && nodes.get(1).getTime() != null){
+                     n1time:{'color':'blue','shape':'rectangle','label':"@nodes.get(1).getTime()"},
+                 }else{
+                     n1time:{'color':'blue','shape':'rectangle','label':"NA"},
+                 }
+                 @if(nodes!=null && nodes.get(2) != null && nodes.get(2).getTime() != null){
+                     n2time:{'color':'blue','shape':'rectangle','label':"@nodes.get(2).getTime()"},
+                 }else{
+                     n2time:{'color':'blue','shape':'rectangle','label':"NA"},
+                 }
+                 @if(nodes!=null && nodes.get(3) != null && nodes.get(3).getTime() != null){
+                     n3time:{'color':'blue','shape':'rectangle','label':"@nodes.get(3).getTime()"}
+                 }else{
+                     n3time:{'color':'blue','shape':'rectangle','label':"NA"}
+                 }
+               }, 
+               edges:{
+                 centre:{ node0:{}},
+                 node0:{node1:{}, n0battery:{}, n0time:{}},
+                 node1:{node2:{}, n1battery:{}, n1time:{}},
+                 node2:{node3:{}, n2battery:{}, n2time:{}},
+                 node3:{centre:{}, n3battery:{}, n3time:{}}
+               }
+             };
+             sys.graft(data);
+      </script>
+</body>
+</html>
+
+}
+
